@@ -67,7 +67,28 @@ const authenticateToken = (req, res, next) => {
   next();
 };
 
+
+// endpoint que renderiza la landing
+
+app.get("/", async (req,res)=>{
+  try {
+    const conex = await connectDB();
+
+    const moviesSql = "select * from movies";
+    const [result] = await conex.query(moviesSql);
+    
+    res.render("landing", {result:result});
+    conex.end();
+  } catch (error) {
+    console.log(error);
+    res
+      .status(500)
+      .json({ success: false, message: "Error al procesar la solicitud" });
+  }
+});
+
 // endpoint que pide todas las movies
+
 app.get("/movies", async (req, res) => {
   try {
     const conex = await connectDB();
@@ -380,3 +401,9 @@ app.put("/logout", (req, res) => {
       .json({ success: false, message: "Error al procesar la solicitud" });
   }
 });
+
+
+// servidor de estaticos
+
+const staticServerCSS = './src/public-css';
+app.use(express.static(staticServerCSS));

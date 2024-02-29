@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tim Burton Movies</title>
+    <link rel="stylesheet" href="/main.css"/>
+  </head>
+  <body>
+
+    <%- include('./header'); %>
+    
+    <main>
+      <% result.forEach(function(item){ %>
+       <div class="container">
+        <img src="<%= item.image%>" alt="<%=item.name%>">
+        <h2> <%= item.name %></h2>
+        <p>Año:<%= item.year%></p>
+        <p>Genero: <%= item.gender %></p>
+        <p>Director: <%= item.director%></p>
+        <p>Synopsis: <%= item.synopsis%></p> 
+      </div>
+     <% })%>
+      
+    </main>
+  </body>
+</html>
