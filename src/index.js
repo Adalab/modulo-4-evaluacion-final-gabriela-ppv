@@ -340,29 +340,43 @@ app.post("/login", async (req, res) => {
 // endpoint autenticar
 
 app.get("/profileUser", authenticateToken, async (req, res) => {
-  console.log(req.user);
-  const sql = "select * from user where email =?";
-  const conex = await connectDB();
-  const [results] = await conex.query(sql, [req.user.email]);
+  try {
+    console.log(req.user);
+    const sql = "select * from user where email =?";
+    const conex = await connectDB();
+    const [results] = await conex.query(sql, [req.user.email]);
 
-  conex.end();
-  res.json({ success: true, user: results });
+    conex.end();
+    res.json({ success: true, user: results });
+  } catch (error) {
+    console.log(error);
+    res
+      .status(500)
+      .json({ success: false, message: "Error al procesar la solicitud" });
+  }
 });
 
 // endpoint cierre de sesion
 
 app.put("/logout", (req, res) => {
-  const tokenHeader = req.headers["authorization"];
-  jwt.sign(
-    { data: "" },
-    "secret_key",
-    { expiresIn: 1 },
-    (error, logoutToken) => {
-      if (!error) {
-        res.json({ message: "Sesion cerrada Exitosamente" });
-      } else {
-        res.json({ message: "Ha ocurrido un error, intentalo nuevamente" });
+  try {
+    const tokenHeader = req.headers["authorization"];
+    jwt.sign(
+      { data: "" },
+      "secret_key",
+      { expiresIn: 1 },
+      (error, logoutToken) => {
+        if (!error) {
+          res.json({ message: "Sesion cerrada Exitosamente" });
+        } else {
+          res.json({ message: "Ha ocurrido un error, intentalo nuevamente" });
+        }
       }
-    }
-  );
+    );
+  } catch (error) {
+    console.log(error);
+    res
+      .status(500)
+      .json({ success: false, message: "Error al procesar la solicitud" });
+  }
 });
