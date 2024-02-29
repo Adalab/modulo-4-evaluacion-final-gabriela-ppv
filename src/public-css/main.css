@@ -1,46 +1,47 @@
+body {
+  background-image: url("https://images.squarespace-cdn.com/content/v1/614e3bbd834f30716574241e/779b8f70-c379-4977-ab66-619aa19f3315/purple+carousel.jpg");
 
-body{
-    background-image:url("https://images.squarespace-cdn.com/content/v1/614e3bbd834f30716574241e/779b8f70-c379-4977-ab66-619aa19f3315/purple+carousel.jpg") ;
+  background-size: cover;
 
-    background-size: cover;
-
-
-    color:white;
+  color: white;
 }
-.header{
-    background-color: black;
-    font-size:30px ;
-    text-align: center;
-    opacity: 0.5; 
+.header {
+  background-color: black;
+  font-size: 30px;
+  text-align: center;
+  opacity: 0.5;
 }
-main{
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 20px;
-    
+main {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 30px;
 }
 
-.container{
-    width: 250px;
-   
-   background-color: black;
-    border: 20px solid transparent; 
-    border-image: url('https://i.etsystatic.com/35099491/r/il/007f55/5254971512/il_fullxfull.5254971512_8vy2.jpg') 30% round;
-    border-radius: 5px;
-    text-align: center;
-    font-size: 1.2rem;
-    font-weight: bold;
-    &:hover {
-      transform: scale(1.1);
-    }
+.container {
+  width: 250px;
+
+  background-color: black;
+  border: 20px solid transparent;
+  border-image: url("https://i.etsystatic.com/35099491/r/il/007f55/5254971512/il_fullxfull.5254971512_8vy2.jpg")
+    30% round;
+  border-radius: 5px;
+  text-align: center;
+  font-size: 1.2rem;
+  font-weight: bold;
+  &:hover {
+    transform: scale(1.1);
+  }
 }
 
-img{
-    width: 200px;
-    border:2px solid white ;
+img {
+  width: 200px;
+  max-height: 200px;
+  border: 2px solid white;
+  margin-top: 20px;
 }
 
-p{
-    font-size:15px ;
+p {
+  font-size: 15px;
+  text-align: center;
 }
