@@ -4,7 +4,7 @@ const mysql = require("mysql2/promise");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
-// creo mi servidor 
+// creo mi servidor
 
 const app = express();
 app.use(cors());
@@ -31,7 +31,41 @@ app.listen(serverPort, () => {
   console.log(`http://localhost:${serverPort}`);
 });
 
+// funcion que genera los token
+const generateToken = (data) => {
+  const token = jwt.sign(data, "secret_key", { expiresIn: "1h" });
+  return token;
+};
 
+// funcion que autentica el token
+
+const verifyToken = (token) => {
+  try {
+    const verifyT = jwt.verify(token, "secret_key");
+    return verifyT;
+  } catch (error) {
+    return null;
+  }
+};
+
+// funcion middleware
+
+const authenticateToken = (req, res, next) => {
+  const tokenBearer = req.headers["authorization"];
+
+  if (!tokenBearer) {
+    return res.status(401).json({ error: "No hay token" });
+  }
+
+  const token = tokenBearer.split(" ")[1];
+  const validateToken = verifyToken(token);
+  if (!validateToken) {
+    return res.status(401).json({ error: "token incorrecto" });
+  }
+
+  req.user = validateToken;
+  next();
+};
 
 // endpoint que pide todas las movies
 app.get("/movies", async (req, res) => {
@@ -91,7 +125,10 @@ app.post("/movies", async (req, res) => {
     const { name, year, gender, director, synopsis, image } = data;
 
     if (!name || !year || !gender || !director || !synopsis || !image) {
-      return res.json({ success: false, message: "Todos los campos son requeridos" });
+      return res.json({
+        success: false,
+        message: "Todos los campos son requeridos",
+      });
     }
 
     const selectmovie = "select * from movies where name= ?";
@@ -101,12 +138,12 @@ app.post("/movies", async (req, res) => {
       const sqlInsert =
         "insert into movies (name, year, gender, director, synopsis, image) values (?,?,?,?,?,?)";
       const [result] = await conex.query(sqlInsert, [
-        name, 
-        year, 
-        gender, 
-        director, 
-        synopsis, 
-        image
+        name,
+        year,
+        gender,
+        director,
+        synopsis,
+        image,
       ]);
       res.json({
         success: true,
@@ -127,58 +164,66 @@ app.post("/movies", async (req, res) => {
 
 // endpoint que filtra los datos por nombre
 
-app.get("/movies/name/:name",async(req,res)=>{
-  try{
+app.get("/movies/name/:name", async (req, res) => {
+  try {
     const conex = await connectDB();
-    const name =req.params.name;
+    const name = req.params.name;
 
-    const sqlSelect ="select * from movies where name =?";
-    const[result] = await conex.query(sqlSelect,[name]);
+    const sqlSelect = "select * from movies where name =?";
+    const [result] = await conex.query(sqlSelect, [name]);
 
-    if(result.length === 0){
-      return res.json({success:false, message:"No se encontro ninguna pelicula, con ese nombre."})
+    if (result.length === 0) {
+      return res.json({
+        success: false,
+        message: "No se encontro ninguna pelicula, con ese nombre.",
+      });
     }
 
     res.json({ success: true, movie: result[0] });
-
-  }catch(error){
+  } catch (error) {
     console.log(error);
-    res.status(500).json({ success: false, message: "Error al procesar la solicitud" });
-  
+    res
+      .status(500)
+      .json({ success: false, message: "Error al procesar la solicitud" });
   }
 });
 
-
-// // endpoint para actualizar una movie existente
+// endpoint para actualizar una movie existente
 
 app.put("/movies/:id", async (req, res) => {
   try {
     const conex = await connectDB();
     const id = req.params.id;
     const data = req.body;
-    const {name, year, gender, director, synopsis, image } = data;
+    const { name, year, gender, director, synopsis, image } = data;
 
     const [existeMovie] = await conex.query(
       "select * from movies where idMovies=?",
       [id]
     );
     if (existeMovie.length === 0) {
-      return res.json({ success: false, message: "La pelicula no se encontro" });
+      return res.json({
+        success: false,
+        message: "La pelicula no se encontro",
+      });
     }
 
     if (!name || !year || !gender || !director || !synopsis || !image) {
-      return res.json({ success: false, message: "Todos los campos son requeridos" });
+      return res.json({
+        success: false,
+        message: "Todos los campos son requeridos",
+      });
     }
 
     const sqlAdd =
       "update movies  set name = ?, year = ?, gender =?, director = ?, synopsis =?, image=? where idMovies = ?";
     const [result] = await conex.query(sqlAdd, [
-     name, 
-     year, 
-     gender, 
-     director, 
-     synopsis, 
-     image,
+      name,
+      year,
+      gender,
+      director,
+      synopsis,
+      image,
       id,
     ]);
     res.json({ success: true, message: "actualizada correctamente" });
@@ -221,3 +266,103 @@ app.delete("/movies", async (req, res) => {
   }
 });
 
+// endpoint que registra un usuario
+
+app.post("/register", async (req, res) => {
+  try {
+    const conex = await connectDB();
+    const { email, nombre, direccion, password } = req.body;
+    const selectUser = "select * from user where email=? ";
+    const [resultSelect] = await conex.query(selectUser, [email]);
+
+    if (resultSelect.length === 0) {
+      const passwordHashed = await bcrypt.hash(password, 10);
+
+      const insertUser =
+        "insert into user (email,nombre,direccion,password) values(?,?,?,?)";
+
+      const [resultInsert] = await conex.query(insertUser, [
+        email,
+        nombre,
+        direccion,
+        passwordHashed,
+      ]);
+      res.json({ success: true, data: resultInsert });
+    } else {
+      res.json({ success: false, message: "El usuario ya esta registrado" });
+    }
+  } catch (error) {
+    console.log(error);
+    res
+      .status(500)
+      .json({ success: false, message: "Error al procesar la solicitud" });
+  }
+});
+
+// endpoint login
+
+app.post("/login", async (req, res) => {
+  try {
+    const conex = await connectDB();
+    const { email, password } = req.body;
+    const selectUser = "select * from user where email =?";
+    const [resultSelect] = await conex.query(selectUser, [email]);
+
+    if (resultSelect.length !== 0) {
+      const isOkPass = await bcrypt.compare(password, resultSelect[0].password);
+      if (isOkPass) {
+        const infoToken = {
+          id: resultSelect[0].id,
+          email: resultSelect[0].email,
+        };
+        const token = generateToken(infoToken);
+        res.json({ success: true, token: token });
+      } else {
+        res.json({
+          success: false,
+          message: "contraseña incorrecta",
+        });
+      }
+    } else {
+      res.json({
+        success: false,
+        msj: "correo no existe",
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    res
+      .status(500)
+      .json({ success: false, message: "Error al procesar la solicitud" });
+  }
+});
+
+// endpoint autenticar
+
+app.get("/profileUser", authenticateToken, async (req, res) => {
+  console.log(req.user);
+  const sql = "select * from user where email =?";
+  const conex = await connectDB();
+  const [results] = await conex.query(sql, [req.user.email]);
+
+  conex.end();
+  res.json({ success: true, user: results });
+});
+
+// endpoint cierre de sesion
+
+app.put("/logout", (req, res) => {
+  const tokenHeader = req.headers["authorization"];
+  jwt.sign(
+    { data: "" },
+    "secret_key",
+    { expiresIn: 1 },
+    (error, logoutToken) => {
+      if (!error) {
+        res.json({ message: "Sesion cerrada Exitosamente" });
+      } else {
+        res.json({ message: "Ha ocurrido un error, intentalo nuevamente" });
+      }
+    }
+  );
+});
