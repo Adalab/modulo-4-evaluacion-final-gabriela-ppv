@@ -1,0 +1,274 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+      "title": "Tim Burton Movies",
+      "version": "1.0.0",
+      "description": "API Movies Tim Burton"
+    },
+    "servers": [
+      {
+        "url": "https:/",
+        "description": "API de peliculas de Tim Burton. Cada tarjeta de una pelicula, contiene el titulo de la pelicula, año de estreno, genero, director,synopsis y una portada imagen."
+      }
+    ],
+    "paths": {
+      "/": {
+        "get": {
+          "summary": "Landing con galeria de todos las peliculas",
+          "responses": {
+            "200": {
+              "description": "Operación exitosa",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "success": {
+                        "type": "boolean"
+                      },
+                      "data": {
+                        "type": "array",
+                        "items": {
+                          "$ref": "#/components/schemas/movies"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/register": {
+        "post": {
+          "summary": "Registrar un usuario",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Registro exitoso"
+            }
+          }
+        }
+      },
+      "/login": {
+        "post": {
+          "summary": "login usuario",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Registro exitoso"
+            }
+          }
+        }
+      },
+      "/profileUser": {
+        "get": {
+          "summary": "autenticacion",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Registro exitoso"
+            }
+          }
+        }
+      },
+      "/logout": {
+        "post": {
+          "summary": "Cierre sesion usuario",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "sesion cerrada exitosamente"
+            }
+          }
+        }
+      },
+      "/movies": {
+        "post": {
+          "summary": "Crea una nueva pelicula",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Pelicula creado exitosamente"
+            }
+          }
+        }
+      },
+      "/movies/name/:name": {
+        "get": {
+          "summary": "Busca una pelicula por nombre",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Pelicula creado exitosamente"
+            }
+          }
+        }
+      },
+      "movies/:id": {
+        "put": {
+          "summary": "Hacer un cambio en una pelicula (actualizar)",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Pelicula actualizada exitosamente"
+            }
+          }
+        }
+      },
+      "/movies/": {
+        "Delete": {
+          "summary": "Elimina una pelicula por nombre",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Pelicula creado exitosamente"
+            }
+          }
+        }
+      },
+      "/movies/:id": {
+        "get": {
+          "summary": "Obtiene detalles de una pelicula específica",
+          "parameters": [
+            {
+              "name": "idMovie",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Operación exitosa"
+            },
+            "404": {
+              "description": "Pelicula no encontrado"
+            }
+          }
+        }
+      }
+    },
+    "components": {
+      "schemas": {
+        "Movies": {
+          "type": "object",
+          "properties": {
+            "idMovie": {
+              "type": "number"
+            },
+            "name": {
+              "type": "string"
+            },
+            "year": {
+              "type": "number"
+            },
+            "gender": {
+              "type": "string"
+            },
+            "director": {
+              "type": "string"
+            },
+            "synopsis": {
+              "type": "string"
+            },
+            "image": {
+              "type": "string"
+            }
+        
+            }
+           
+          }
+        },
+        "NewMovie": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "year": {
+              "type": "number"
+            },
+            "gender": {
+              "type": "string"
+            },
+            "director": {
+              "type": "string"
+            },
+            "synopsis": {
+              "type": "string"
+            },
+            
+            "image": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  
+  
+  

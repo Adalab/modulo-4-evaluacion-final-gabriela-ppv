@@ -3,6 +3,8 @@ const cors = require("cors");
 const mysql = require("mysql2/promise");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
+const swaggerUI = require("swagger-ui-express");
+const swaggerConfig = require("./swagger.json");
 
 // creo mi servidor
 
@@ -10,7 +12,7 @@ const app = express();
 app.use(cors());
 app.use(express.json({ limit: "25mb" }));
 app.set("view engine", "ejs");
-require("dotenv").config(); // esta linea va antes de que se usen las variables de entorno
+require("dotenv").config();
 
 // funcion que me crea la conexion con la base de datos
 const connectDB = async () => {
@@ -30,6 +32,10 @@ const serverPort = process.env.PORT || 5001;
 app.listen(serverPort, () => {
   console.log(`http://localhost:${serverPort}`);
 });
+
+// ruta documentacion API swagger
+
+app.use("/doc", swaggerUI.serve, swaggerUI.setup(swaggerConfig));
 
 // funcion que genera los token
 const generateToken = (data) => {
@@ -67,17 +73,16 @@ const authenticateToken = (req, res, next) => {
   next();
 };
 
-
 // endpoint que renderiza la landing
 
-app.get("/", async (req,res)=>{
+app.get("/", async (req, res) => {
   try {
     const conex = await connectDB();
 
     const moviesSql = "select * from movies";
     const [result] = await conex.query(moviesSql);
-    
-    res.render("landing", {result:result});
+
+    res.render("landing", { result: result });
     conex.end();
   } catch (error) {
     console.log(error);
@@ -109,7 +114,7 @@ app.get("/movies", async (req, res) => {
   }
 });
 
-// // endpoint que busca una movie por id
+//  endpoint que busca una movie por id
 
 app.get("/movies/:id", async (req, res) => {
   try {
@@ -137,7 +142,7 @@ app.get("/movies/:id", async (req, res) => {
   }
 });
 
-// // endpoint para crear una nueva movie
+// endpoint para crear una nueva movie
 
 app.post("/movies", async (req, res) => {
   try {
@@ -169,6 +174,7 @@ app.post("/movies", async (req, res) => {
       res.json({
         success: true,
         id: result.insertId,
+        message: "Pelicula creada exitosamente",
       });
     } else {
       res.json({ success: false, message: "La pelicula ya existe" });
@@ -308,7 +314,11 @@ app.post("/register", async (req, res) => {
         direccion,
         passwordHashed,
       ]);
-      res.json({ success: true, data: resultInsert });
+      res.json({
+        success: true,
+        data: resultInsert,
+        message: "registro exitoso",
+      });
     } else {
       res.json({ success: false, message: "El usuario ya esta registrado" });
     }
@@ -402,8 +412,7 @@ app.put("/logout", (req, res) => {
   }
 });
 
-
 // servidor de estaticos
 
-const staticServerCSS = './src/public-css';
+const staticServerCSS = "./src/public-css";
 app.use(express.static(staticServerCSS));
