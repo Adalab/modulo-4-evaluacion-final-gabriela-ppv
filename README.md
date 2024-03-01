@@ -38,7 +38,7 @@ Además de implementar los endpoints básicos, he  agregado funcionalidades extr
    - Agrega una carpeta configurada con un servidor de archivos estáticos que contiene una landing donde aparecen la lista de las peliculas desde la base de datos.
 
 5. **Documentación:**
-   - Instalacion y configuracion de la librería Swagger para generar una página web con la documentación de los endpoints de mi API.
+   - Instalacion y configuracion de la librería Swagger para generar una página web con la documentación de los endpoints de mi API, que esta disponible en este repositorio.
 
 #### Uso:
 
