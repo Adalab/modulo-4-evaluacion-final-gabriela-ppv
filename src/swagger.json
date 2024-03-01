@@ -54,6 +54,9 @@
           "responses": {
             "200": {
               "description": "Registro exitoso"
+            },
+            "404": {
+              "description": "El usuario ya esta registrado"
             }
           }
         }
@@ -71,7 +74,10 @@
           },
           "responses": {
             "200": {
-              "description": "Registro exitoso"
+              "description": "Todo ha salido bien"
+            },
+            "404": {
+              "description": "contraseña incorrecta"
             }
           }
         }
@@ -89,7 +95,10 @@
           },
           "responses": {
             "200": {
-              "description": "Registro exitoso"
+              "description": "Todo ha salido bien"
+            },
+            "500": {
+              "description": "error al procesar la solicitud"
             }
           }
         }
@@ -108,6 +117,9 @@
           "responses": {
             "200": {
               "description": "sesion cerrada exitosamente"
+            },
+            "404": {
+              "description": "Ha ocurrido un error, intentalo denuevo"
             }
           }
         }
@@ -126,6 +138,9 @@
           "responses": {
             "200": {
               "description": "Pelicula creado exitosamente"
+            },
+            "404": {
+              "description": "La pelicula ya existe"
             }
           }
         }
@@ -145,7 +160,10 @@
           },
           "responses": {
             "200": {
-              "description": "Pelicula creado exitosamente"
+              "description": "exito"
+            },
+            "404": {
+              "description": "No se encontro ninguna pelicula con ese nombre"
             }
           }
         }
@@ -166,6 +184,9 @@
           "responses": {
             "200": {
               "description": "Pelicula actualizada exitosamente"
+            },
+            "404": {
+              "description": "La Pelicula no se ha encontrado"
             }
           }
         }
@@ -183,7 +204,10 @@
           },
           "responses": {
             "200": {
-              "description": "Pelicula creado exitosamente"
+              "description": "Pelicula eliminada exitosamente"
+            },
+            "404": {
+              "description": "No se ha eliminado, ya que no existe"
             }
           }
         }
@@ -206,7 +230,7 @@
               "description": "Operación exitosa"
             },
             "404": {
-              "description": "Pelicula no encontrado"
+              "description": "El id no existe"
             }
           }
         }

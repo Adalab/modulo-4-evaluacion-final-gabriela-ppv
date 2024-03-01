@@ -347,7 +347,7 @@ app.post("/login", async (req, res) => {
           email: resultSelect[0].email,
         };
         const token = generateToken(infoToken);
-        res.json({ success: true, token: token });
+        res.json({ success: true, token: token, message:"Todo ha salido bien" });
       } else {
         res.json({
           success: false,
@@ -378,7 +378,7 @@ app.get("/profileUser", authenticateToken, async (req, res) => {
     const [results] = await conex.query(sql, [req.user.email]);
 
     conex.end();
-    res.json({ success: true, user: results });
+    res.json({ success: true, user: results,message:"Todo ha salido bien" });
   } catch (error) {
     console.log(error);
     res
